@@ -96,7 +96,7 @@ public class ArticleActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.action_delete:
-                    // do something
+                    deleteData(title);
                     return true;
 
                 case R.id.action_help2:
@@ -118,6 +118,16 @@ public class ArticleActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
         }
+
+    public void deleteData(String title) {
+        boolean deleteData = dbOpener.deleteData(title);
+        if(deleteData) {
+            Toast.makeText(getApplicationContext(), "Data deleted", Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+        }
+    }
 
     }
 

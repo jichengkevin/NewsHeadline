@@ -62,18 +62,18 @@ public class MainActivity extends AppCompatActivity {
 
 
         //get a database:
-        mydb = new MyDatabaseOpenHelper(this);
-        SQLiteDatabase db = mydb.getWritableDatabase();
+        //mydb = new MyDatabaseOpenHelper(this);
+        //SQLiteDatabase db = mydb.getWritableDatabase();
 
         //query all the results from the database:
-        String [] columns = {MyDatabaseOpenHelper.COL_ID, MyDatabaseOpenHelper.COL_TITLE, MyDatabaseOpenHelper.COL_DESCRIPTION, MyDatabaseOpenHelper.COL_URL};
-        Cursor results = db.query(false, MyDatabaseOpenHelper.TABLE_NAME, columns, null, null, null, null, null, null);
+        //String [] columns = {MyDatabaseOpenHelper.COL_ID, MyDatabaseOpenHelper.COL_TITLE, MyDatabaseOpenHelper.COL_DESCRIPTION, MyDatabaseOpenHelper.COL_URL};
+        //Cursor results = db.query(false, MyDatabaseOpenHelper.TABLE_NAME, columns, null, null, null, null, null, null);
 
         //find the column indices:
-        int titleColumnIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_TITLE);
-        int descriptionColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_DESCRIPTION);
-        int idColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_ID);
-        int urlColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_URL);
+        //int titleColumnIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_TITLE);
+        //int descriptionColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_DESCRIPTION);
+        //int idColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_ID);
+        //int urlColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_URL);
 
 
         if (Downloader.isNetworkConnected(getApplicationContext())) {

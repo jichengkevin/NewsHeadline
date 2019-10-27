@@ -8,12 +8,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +84,36 @@ public class SavedActivity extends AppCompatActivity {
             startActivity(i);
 
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_saved, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+
+            case R.id.action_deleteAll:
+                MyDatabaseOpenHelper dbOpener = new MyDatabaseOpenHelper(this);
+                SQLiteDatabase db = dbOpener.getWritableDatabase();
+                db.execSQL("delete from "+ MyDatabaseOpenHelper.TABLE_NAME);
+                Toast.makeText(getApplicationContext(), "All Articles Deleted", Toast.LENGTH_LONG).show();
+                myAdapter.notifyDataSetChanged();
+                return true;
+
+            case R.id.action_help2:
+                Intent myIntent = new Intent(this, Help.class);
+                this.startActivity(myIntent);
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     public class ArticleAdapter extends BaseAdapter {

@@ -75,6 +75,12 @@ public class MyDatabaseOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    //---deletes a particular title---
+    public boolean deleteData(String title)
+    {   SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(MyDatabaseOpenHelper.TABLE_NAME, COL_TITLE + "=?", new String[]{title}) > 0;
+    }
+
 
 }
 
