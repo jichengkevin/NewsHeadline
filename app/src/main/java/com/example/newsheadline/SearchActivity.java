@@ -26,8 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import android.widget.SearchView;
 
-public class MainActivity extends AppCompatActivity {
-
+public class SearchActivity extends AppCompatActivity {
     ListView listNews;
     ProgressBar loader;
     SharedPreferences prefs;
@@ -37,10 +36,8 @@ public class MainActivity extends AppCompatActivity {
     static String xml=null;
     int positionClicked = 0;
     BaseAdapter myAdapter;
-    String KEYWORD=null;
+    String KEYWORD="null";
     String API_KEY = "a65a65ef7a2f4c4c89a76a64790c4af9";
-    //static String NEWS_SOURCE = "abc-news";
-    //static String weburl = "https://newsapi.org/v2/top-headlines?sources=" + NEWS_SOURCE + "&apiKey=" + API_KEY;
     String weburl = "https://newsapi.org/v2/everything?q=" +KEYWORD+"&from=2019-10-01&sortBy=publishedAt&apiKey=" + API_KEY;
 
 
@@ -49,22 +46,25 @@ public class MainActivity extends AppCompatActivity {
     static final String KEY_TITLE = "title";
     static final String KEY_DESCRIPTION = "description";
     static final String KEY_URL = "url";
-    static final String KEY_URLTOIMAGE = "urlToImage";
-    static final String KEY_PUBLISHEDAT = "publishedAt";
-    static final String KEY_AUTHOR = "author";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_search);
 
-        listNews = findViewById(R.id.listNews);
-        loader = findViewById(R.id.loader);
+        listNews = findViewById(R.id.listNews_search);
+        loader = findViewById(R.id.loader_search);
         listNews.setEmptyView(loader);
         prefs = getSharedPreferences(previous, MODE_PRIVATE);
 
+        Intent intent = getIntent();
+        //if (Intent.ACTION_SEARCH.equals(intent.getAction()))
+        KEYWORD = intent.getStringExtra("query");
+
+        weburl = "https://newsapi.org/v2/everything?q=" +KEYWORD+"&from=2019-10-01&sortBy=publishedAt&apiKey=" + API_KEY;
+
         if (Downloader.isNetworkConnected(getApplicationContext())) {
-            DownloadNews newsTask = new DownloadNews();
+           DownloadNews newsTask = new DownloadNews();
             newsTask.execute();
         } else {
             Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     //save the position in case this object gets deleted or updated
                     positionClicked = position;
 
-                    Intent i = new Intent(MainActivity.this, ArticleActivity.class);
+                    Intent i = new Intent(SearchActivity.this, ArticleActivity.class);
                     i.putExtra("url", dataList.get(position).get(KEY_URL));
                     i.putExtra("title", dataList.get(position).get(KEY_TITLE));
                     i.putExtra("description", dataList.get(position).get(KEY_DESCRIPTION));
@@ -171,62 +171,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
 
-        searchManager = (SearchManager)
-                getSystemService(Context.SEARCH_SERVICE);
-
-        search = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        search.setSearchableInfo(searchManager.
-                getSearchableInfo(getComponentName()));
-        search.setSubmitButtonEnabled(true);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        //KEYWORD=query;
-                        Intent searchIntent = new Intent(MainActivity.this, SearchActivity.class);
-                        searchIntent.putExtra("query", query);
-                        startActivity(searchIntent);
-                        return  true; }
-                    @Override
-                    public boolean onQueryTextChange(String query) {
-                        //KEYWORD=query;
-                        return false;
-                    }
-
-                });
-
-                return true;
-
-            case R.id.action_saved:
-                Intent saveIntent = new Intent(this, SavedActivity.class);
-                this.startActivity(saveIntent);
-                return true;
-            case R.id.action_help:
-                Intent myIntent = new Intent(this, Help.class);
-                this.startActivity(myIntent);
-                return true;
-
-                default:
-                return super.onContextItemSelected(item);
-        }
-    }
 }
-
-
-
-
 
