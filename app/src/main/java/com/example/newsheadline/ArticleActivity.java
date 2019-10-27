@@ -81,27 +81,16 @@ public class ArticleActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.action_save:
                     addData(title, description, url);
-                    //add to the database and get the new ID
-
-                    //db = dbOpener.getWritableDatabase();
-                    //ContentValues newRowValues = new ContentValues();
-                    //newRowValues.put(MyDatabaseOpenHelper.COL_TITLE, title);
-                    //newRowValues.put(MyDatabaseOpenHelper.COL_DESCRIPTION, description);
-                    //newRowValues.put(MyDatabaseOpenHelper.COL_URL, url);
-                    //insert in the database:
-                    //long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
-                    //if(newId == -1) return false;
-                   // else {
-                    //Toast.makeText(getApplicationContext(), "Article saved", Toast.LENGTH_LONG).show();
+                    //SavedActivity.myAdapter.notifyDataSetChanged();
                     return true;
 
                 case R.id.action_delete:
                     deleteData(title);
                     return true;
 
-                case R.id.action_help2:
-                    Intent myIntent = new Intent(this, Help.class);
-                    this.startActivity(myIntent);
+                case R.id.title_saved:
+                    Intent saveIntent = new Intent(this, SavedActivity.class);
+                    this.startActivity(saveIntent);
                     return true;
 
                 default:

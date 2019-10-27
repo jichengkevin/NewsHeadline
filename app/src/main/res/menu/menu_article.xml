@@ -18,9 +18,9 @@
         android:title="@string/title_delete" />
 
     <item
-        android:id="@+id/action_help2"
+        android:id="@+id/title_saved"
+        android:icon="@drawable/ic_saved"
         app:showAsAction="collapseActionView|always"
-        android:icon="@drawable/ic_help"
-        android:title="@string/help" />
+        android:title="@string/title_saved" />
 
 </menu>
