@@ -23,15 +23,13 @@ public class ArticleActivity extends AppCompatActivity {
     String title = "";
     String description = "";
     MyDatabaseOpenHelper dbOpener;
-    SQLiteDatabase db;
+    //SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
-
         dbOpener = new MyDatabaseOpenHelper(this);
-        db = dbOpener.getWritableDatabase();
 
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
@@ -82,16 +80,19 @@ public class ArticleActivity extends AppCompatActivity {
             Intent intent;
             switch (item.getItemId()) {
                 case R.id.action_save:
-
+                    addData(title, description, url);
                     //add to the database and get the new ID
-                    ContentValues newRowValues = new ContentValues();
-                    newRowValues.put(MyDatabaseOpenHelper.COL_TITLE, title);
-                    newRowValues.put(MyDatabaseOpenHelper.COL_DESCRIPTION, description);
-                    newRowValues.put(MyDatabaseOpenHelper.COL_URL, url);
-                    //insert in the database:
-                    long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
 
-                    Toast.makeText(getApplicationContext(), "Article saved", Toast.LENGTH_LONG).show();
+                    //db = dbOpener.getWritableDatabase();
+                    //ContentValues newRowValues = new ContentValues();
+                    //newRowValues.put(MyDatabaseOpenHelper.COL_TITLE, title);
+                    //newRowValues.put(MyDatabaseOpenHelper.COL_DESCRIPTION, description);
+                    //newRowValues.put(MyDatabaseOpenHelper.COL_URL, url);
+                    //insert in the database:
+                    //long newId = db.insert(MyDatabaseOpenHelper.TABLE_NAME, null, newRowValues);
+                    //if(newId == -1) return false;
+                   // else {
+                    //Toast.makeText(getApplicationContext(), "Article saved", Toast.LENGTH_LONG).show();
                     return true;
 
                 case R.id.action_delete:
@@ -105,6 +106,16 @@ public class ArticleActivity extends AppCompatActivity {
 
                 default:
                     return super.onContextItemSelected(item);
+            }
+        }
+
+        public void addData(String title, String description, String url) {
+            boolean insertData = dbOpener.addData(title, description, url);
+            if(insertData) {
+                Toast.makeText(getApplicationContext(), "Data saved", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
         }
 

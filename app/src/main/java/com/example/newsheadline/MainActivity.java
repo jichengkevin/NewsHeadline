@@ -200,9 +200,9 @@ public class MainActivity extends AppCompatActivity {
                 // do something
                 return true;
             case R.id.action_saved:
-                // do something
+                Intent saveIntent = new Intent(this, SavedActivity.class);
+                this.startActivity(saveIntent);
                 return true;
-
             case R.id.action_help:
                 Intent myIntent = new Intent(this, Help.class);
                 this.startActivity(myIntent);
