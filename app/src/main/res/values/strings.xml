@@ -2,5 +2,11 @@
     <string name="app_name">NewsHeadline</string>
     <string name="saved">Saved Articles</string>
     <string name="title_saved">Saved Article</string>
+    <string name="title_save">Save</string>
+    <string name="title_delete">Delete</string>
     <string name="help">Help</string>
+    <string name="help_detail">Version 0.1.\n
+         \nYou can find the codes on GitHub.
+         \nPlease check my projects and Follow me.\n
+         \nJust try to implement whatever I have learned in class.</string>
 </resources>

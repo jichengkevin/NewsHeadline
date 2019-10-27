@@ -9,19 +9,21 @@
         android:orderInCategory="100"
         android:title="Search"
         android:icon="@drawable/ic_search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:actionViewClass="android.widget.SearchView"
         app:showAsAction="collapseActionView|always"
         android:theme="@android:style/Theme.Holo.Light.DarkActionBar"/>
 
 
     <item
-        android:id="@+id/navigation_saved"
+        android:id="@+id/action_saved"
         android:icon="@drawable/ic_saved"
+        app:showAsAction="collapseActionView|always"
         android:title="@string/title_saved" />
 
     <item
-        android:id="@+id/navigation_help"
-        android:icon="@drawable/ic_sources"
+        android:id="@+id/action_help"
+        app:showAsAction="collapseActionView|always"
+        android:icon="@drawable/ic_help"
         android:title="@string/help" />
 
 </menu>

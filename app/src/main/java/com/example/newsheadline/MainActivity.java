@@ -2,10 +2,15 @@ package com.example.newsheadline;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     String previous = "FileName";
     MyDatabaseOpenHelper mydb;
     int positionClicked = 0;
-    Button button;
+
 
     ArrayList<HashMap<String, String>> dataList = new ArrayList<>();
 
@@ -51,11 +56,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listNews = findViewById(R.id.listNews);
-        button = findViewById(R.id.button);
         loader = findViewById(R.id.loader);
         listNews.setEmptyView(loader);
         prefs = getSharedPreferences(previous, MODE_PRIVATE);
+
+
+        //get a database:
         mydb = new MyDatabaseOpenHelper(this);
+        SQLiteDatabase db = mydb.getWritableDatabase();
+
+        //query all the results from the database:
+        String [] columns = {MyDatabaseOpenHelper.COL_ID, MyDatabaseOpenHelper.COL_TITLE, MyDatabaseOpenHelper.COL_DESCRIPTION, MyDatabaseOpenHelper.COL_URL};
+        Cursor results = db.query(false, MyDatabaseOpenHelper.TABLE_NAME, columns, null, null, null, null, null, null);
+
+        //find the column indices:
+        int titleColumnIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_TITLE);
+        int descriptionColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_DESCRIPTION);
+        int idColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_ID);
+        int urlColIndex = results.getColumnIndex(MyDatabaseOpenHelper.COL_URL);
 
 
         if (Downloader.isNetworkConnected(getApplicationContext())) {
@@ -66,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 
 
     class DownloadNews extends AsyncTask<String, Void, String> {
@@ -116,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
 
                     Intent i = new Intent(MainActivity.this, ArticleActivity.class);
                     i.putExtra("url", dataList.get(position).get(KEY_URL));
+                    i.putExtra("title", dataList.get(position).get(KEY_TITLE));
+                    i.putExtra("description", dataList.get(position).get(KEY_DESCRIPTION));
                     startActivity(i);
 
                 });
@@ -127,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected class MyOwnAdapter extends BaseAdapter {
+    public class MyOwnAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -161,6 +182,34 @@ public class MainActivity extends AppCompatActivity {
             return newView;
 
 
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                // do something
+                return true;
+            case R.id.action_saved:
+                // do something
+                return true;
+
+            case R.id.action_help:
+                Intent myIntent = new Intent(this, Help.class);
+                this.startActivity(myIntent);
+                return true;
+
+                default:
+                return super.onContextItemSelected(item);
         }
     }
 }
