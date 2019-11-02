@@ -30,7 +30,6 @@ public class SearchActivity extends AppCompatActivity {
     ListView listNews;
     ProgressBar loader;
     SharedPreferences prefs;
-    String previous = "FileName";
     SearchManager searchManager;
     SearchView search;
     static String xml=null;
@@ -39,7 +38,7 @@ public class SearchActivity extends AppCompatActivity {
     String KEYWORD="null";
     String API_KEY = "a65a65ef7a2f4c4c89a76a64790c4af9";
     String weburl = "https://newsapi.org/v2/everything?q=" +KEYWORD+"&from=2019-10-01&sortBy=publishedAt&apiKey=" + API_KEY;
-
+    String previous = "FileName";
 
     ArrayList<HashMap<String, String>> dataList = new ArrayList<>();
 

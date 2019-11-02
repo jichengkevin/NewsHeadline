@@ -14,6 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,22 +29,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import android.widget.SearchView;
 
+import com.squareup.picasso.Picasso;
+
 public class MainActivity extends AppCompatActivity {
 
     ListView listNews;
     ProgressBar loader;
     SharedPreferences prefs;
-    String previous = "FileName";
+    //String previous = "FileName";
     SearchManager searchManager;
     SearchView search;
-    static String xml=null;
+    static String xml = null;
     int positionClicked = 0;
     BaseAdapter myAdapter;
-    String KEYWORD=null;
+    String KEYWORD = null;
     String API_KEY = "a65a65ef7a2f4c4c89a76a64790c4af9";
     //static String NEWS_SOURCE = "abc-news";
     //static String weburl = "https://newsapi.org/v2/top-headlines?sources=" + NEWS_SOURCE + "&apiKey=" + API_KEY;
-    String weburl = "https://newsapi.org/v2/everything?q=" +KEYWORD+"&from=2019-10-01&sortBy=publishedAt&apiKey=" + API_KEY;
+    String weburl = "https://newsapi.org/v2/everything?q=" + KEYWORD + "&from=2019-10-01&sortBy=publishedAt&apiKey=" + API_KEY;
 
 
     ArrayList<HashMap<String, String>> dataList = new ArrayList<>();
@@ -61,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
         listNews = findViewById(R.id.listNews);
         loader = findViewById(R.id.loader);
         listNews.setEmptyView(loader);
-        prefs = getSharedPreferences(previous, MODE_PRIVATE);
+        //prefs = getSharedPreferences(previous, MODE_PRIVATE);
+        KEYWORD= getPreferences(MODE_PRIVATE).getString("KEYWORD",null);
 
         if (Downloader.isNetworkConnected(getApplicationContext())) {
             DownloadNews newsTask = new DownloadNews();
@@ -100,9 +106,8 @@ public class MainActivity extends AppCompatActivity {
                         map.put(KEY_TITLE, jsonObject.optString(KEY_TITLE));
                         map.put(KEY_DESCRIPTION, jsonObject.optString(KEY_DESCRIPTION));
                         map.put(KEY_URL, jsonObject.optString(KEY_URL));
-                        //map.put(KEY_URLTOIMAGE, jsonObject.optString(KEY_URLTOIMAGE));
+                        map.put(KEY_URLTOIMAGE, jsonObject.optString(KEY_URLTOIMAGE));
                         //map.put(KEY_PUBLISHEDAT, jsonObject.optString(KEY_PUBLISHEDAT));
-                        //dataList.add(jsonObject.optString(KEY_TITLE));
                         //map.put(KEY_AUTHOR, jsonObject.optString(KEY_AUTHOR));
                         dataList.add(map);
                     }
@@ -123,12 +128,11 @@ public class MainActivity extends AppCompatActivity {
                     i.putExtra("url", dataList.get(position).get(KEY_URL));
                     i.putExtra("title", dataList.get(position).get(KEY_TITLE));
                     i.putExtra("description", dataList.get(position).get(KEY_DESCRIPTION));
+                    i.putExtra("urlToImage", dataList.get(position).get(KEY_URLTOIMAGE));
                     startActivity(i);
 
                 });
-            }
-
-            else {
+            } else {
                 Toast.makeText(getApplicationContext(), "No news found", Toast.LENGTH_SHORT).show();
             }
         }
@@ -149,27 +153,52 @@ public class MainActivity extends AppCompatActivity {
             return position;
         }
 
-        public View getView(int i, View view, ViewGroup parent) {
+        public View getView(int position, View view, ViewGroup parent) {
 
             LayoutInflater inflater = getLayoutInflater();
 
-            View newView = inflater.inflate(R.layout.title_row, parent, false);
+            View newView = inflater.inflate(R.layout.article_row, parent, false);
 
-            TextView rowTitle = (TextView) newView.findViewById(R.id.title);
-            TextView rowDes = (TextView) newView.findViewById(R.id.description);
+            TextView rowTitle = (TextView) newView.findViewById(R.id.article_title);
+            TextView rowDes = (TextView) newView.findViewById(R.id.article_des);
+            ImageView rowImg = (ImageView) newView.findViewById(R.id.article_img);
 
             HashMap<String, String> data = new HashMap<String, String>();
-            data = dataList.get(i);
+            data = dataList.get(position);
 
             rowTitle.setText(data.get(MainActivity.KEY_TITLE));
             rowDes.setText(data.get(MainActivity.KEY_DESCRIPTION));
 
+            if (data.get(MainActivity.KEY_URLTOIMAGE).toString().length() < 10) {
+                rowImg.setVisibility(View.GONE);
+            } else {
+                Picasso.get()
+                        .load(data.get(MainActivity.KEY_URLTOIMAGE))
+                        .resize(200, 150)
+                        .centerCrop()
+                        .into(rowImg);}
+
+            Button button = newView.findViewById(R.id.article_button);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent i = new Intent(MainActivity.this, ArticleActivity.class);
+                    i.putExtra("url", dataList.get(position).get(KEY_URL));
+                    i.putExtra("title", dataList.get(position).get(KEY_TITLE));
+                    i.putExtra("description", dataList.get(position).get(KEY_DESCRIPTION));
+                    i.putExtra("urlToImage", dataList.get(position).get(KEY_URLTOIMAGE));
+                    startActivity(i);
+                }
+            });
+
             //return the row:
             return newView;
 
-
         }
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -198,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onQueryTextSubmit(String query) {
                         //KEYWORD=query;
                         Intent searchIntent = new Intent(MainActivity.this, SearchActivity.class);
+                        getPreferences(MODE_PRIVATE).edit().putString("KEYWORD",query).apply();
                         searchIntent.putExtra("query", query);
                         startActivity(searchIntent);
                         return  true; }
